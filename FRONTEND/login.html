@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0f1117;
+            color: white;
+        }
+
+        .login-box {
+            width: 380px;
+            padding: 40px;
+            border-radius: 20px;
+            background: #1b1e27;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #999;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            border-radius: 10px;
+            background: #111318;
+            color: white;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #00aaff;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #00aaff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #008ed6;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 20px;
+            color: #ff5555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+
+        <h1>🔐 Admin Login</h1>
+
+        <p class="subtitle">
+            FAQ Assistant Administration
+        </p>
+
+        <form id="loginForm">
+
+            <label>Username</label>
+
+            <input
+                type="text"
+                id="username"
+                placeholder="Enter username"
+                required
+            >
+
+            <label>Password</label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter password"
+                required
+            >
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+        <p id="message"></p>
+
+    </div>
+
+
+<script>
+
+    const loginForm =
+        document.getElementById("loginForm");
+
+    const message =
+        document.getElementById("message");
+
+
+    loginForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            const username =
+                document.getElementById("username").value.trim();
+
+            const password =
+                document.getElementById("password").value;
+
+
+            message.textContent = "Logging in...";
+
+
+            try {
+
+                const response = await fetch(
+                    "http://localhost:3000/api/admin/login",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            username,
+                            password
+                        })
+                    }
+                );
+
+
+                const data =
+                    await response.json();
+
+
+                if (response.ok && data.success) {
+
+    sessionStorage.setItem(
+        "adminLoggedIn",
+        "true"
+    );
+
+    sessionStorage.setItem(
+        "adminToken",
+        data.token
+    );
+
+    window.location.href =
+        "admin.html";
+} else {
+
+                    message.textContent =
+                        "❌ " + data.message;
+
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+                message.textContent =
+                    "❌ Cannot connect to the server.";
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>

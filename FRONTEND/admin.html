@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>FAQ Admin Panel</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f1117,
+                    #171b25
+                );
+
+            color: white;
+
+            padding: 30px;
+        }
+
+
+        .container {
+
+            max-width: 1000px;
+
+            margin: auto;
+
+            background:
+                rgba(255, 255, 255, 0.06);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.1);
+
+            border-radius: 20px;
+
+            padding: 30px;
+
+            backdrop-filter: blur(15px);
+
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+
+        .admin-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+
+            margin-bottom: 30px;
+        }
+
+
+        h1 {
+
+            font-size: 28px;
+        }
+
+
+        .logout-btn {
+
+            width: auto;
+
+            padding: 10px 18px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #ff4d4d;
+
+            color: white;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .logout-btn:hover {
+
+            background: #e63939;
+        }
+
+
+        .form-box {
+
+            background:
+                rgba(0, 0, 0, 0.2);
+
+            padding: 20px;
+
+            border-radius: 15px;
+
+            margin-bottom: 30px;
+        }
+
+
+        .form-box h2 {
+
+            margin-bottom: 20px;
+        }
+
+
+        input,
+        textarea {
+
+            width: 100%;
+
+            padding: 13px;
+
+            margin-bottom: 15px;
+
+            border: 1px solid #333;
+
+            border-radius: 10px;
+
+            background: #111318;
+
+            color: white;
+
+            outline: none;
+        }
+
+
+        input:focus,
+        textarea:focus {
+
+            border-color: #00aaff;
+        }
+
+
+        textarea {
+
+            min-height: 100px;
+
+            resize: vertical;
+        }
+
+
+        .button-row {
+
+            display: flex;
+
+            gap: 10px;
+        }
+
+
+        .button-row button {
+
+            border: none;
+
+            padding: 12px 20px;
+
+            border-radius: 10px;
+
+            color: white;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        #saveBtn {
+
+            background: #00aaff;
+        }
+
+
+        #saveBtn:hover {
+
+            background: #008ed6;
+        }
+
+
+        #cancelBtn {
+
+            background: #555;
+
+            display: none;
+        }
+
+
+        .status {
+
+            margin-top: 15px;
+
+            min-height: 20px;
+
+            color: #66ff99;
+        }
+
+
+        .faq-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 15px;
+        }
+
+
+        .faq-item {
+
+            background:
+                rgba(255, 255, 255, 0.05);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.08);
+
+            border-radius: 15px;
+
+            padding: 20px;
+        }
+
+
+        .faq-keywords {
+
+            color: #00aaff;
+
+            font-weight: bold;
+
+            margin-bottom: 10px;
+
+            word-break: break-word;
+        }
+
+
+        .faq-answer {
+
+            color: #ddd;
+
+            line-height: 1.5;
+
+            margin-bottom: 15px;
+        }
+
+
+        .faq-actions {
+
+            display: flex;
+
+            gap: 10px;
+        }
+
+
+        .faq-actions button {
+
+            border: none;
+
+            padding: 9px 15px;
+
+            border-radius: 8px;
+
+            color: white;
+
+            cursor: pointer;
+
+            font-weight: bold;
+        }
+
+
+        .edit-btn {
+
+            background: #ffaa00;
+        }
+
+
+        .delete-btn {
+
+            background: #ff4d4d;
+        }
+
+
+        .empty {
+
+            text-align: center;
+
+            color: #999;
+
+            padding: 30px;
+        }
+
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 15px;
+            }
+
+
+            .container {
+                padding: 20px;
+            }
+
+
+            .admin-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+
+            .logout-btn {
+                width: 100%;
+            }
+
+
+            .button-row {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<script>
+
+    if (
+        sessionStorage.getItem("adminLoggedIn") !== "true"
+    ) {
+
+        window.location.href = "login.html";
+
+    }
+
+</script>
+
+
+<div class="container">
+
+
+    <div class="admin-header">
+
+        <h1>
+            ⚙️ FAQ Admin Panel
+        </h1>
+
+
+        <button
+            onclick="logoutAdmin()"
+            class="logout-btn"
+        >
+            🚪 Logout
+        </button>
+
+    </div>
+
+
+    <div class="form-box">
+
+        <h2 id="formTitle">
+            Add New FAQ
+        </h2>
+
+
+        <input
+            type="text"
+            id="keywords"
+            placeholder="Keywords separated by commas"
+        >
+
+
+        <textarea
+            id="answer"
+            placeholder="FAQ answer"
+        ></textarea>
+
+
+        <div class="button-row">
+
+            <button
+                id="saveBtn"
+                onclick="saveFAQ()"
+            >
+                Add FAQ
+            </button>
+
+
+            <button
+                id="cancelBtn"
+                onclick="cancelEdit()"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+
+        <div
+            id="status"
+            class="status"
+        ></div>
+
+    </div>
+
+
+    <div>
+
+        <h2 style="margin-bottom: 15px;">
+            📚 FAQ Database
+        </h2>
+
+
+        <div
+            id="faqList"
+            class="faq-list"
+        ></div>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+    const API_URL =
+        "http://localhost:3000";
+
+
+    let editingId = null;
+
+
+    // -----------------------------
+    // GET ADMIN TOKEN
+    // -----------------------------
+
+    function getToken() {
+
+        return sessionStorage.getItem(
+            "adminToken"
+        );
+
+    }
+
+
+    // -----------------------------
+    // LOGOUT
+    // -----------------------------
+
+    async function logoutAdmin() {
+
+        const token =
+            getToken();
+
+
+        try {
+
+            if (token) {
+
+                await fetch(
+                    `${API_URL}/api/admin/logout`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+
+        sessionStorage.removeItem(
+            "adminLoggedIn"
+        );
+
+        sessionStorage.removeItem(
+            "adminToken"
+        );
+
+
+        window.location.href =
+            "login.html";
+    }
+
+
+    // -----------------------------
+    // LOAD FAQs
+    // -----------------------------
+
+    async function loadFAQs() {
+
+        const faqList =
+            document.getElementById(
+                "faqList"
+            );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/api/faqs`
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to load FAQs."
+                );
+
+            }
+
+
+            const faqs =
+                await response.json();
+
+
+            faqList.innerHTML = "";
+
+
+            if (
+                !Array.isArray(faqs) ||
+                faqs.length === 0
+            ) {
+
+                faqList.innerHTML = `
+                    <div class="empty">
+                        No FAQs available.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            faqs.forEach(
+                (faq, index) => {
+
+                    const item =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    item.className =
+                        "faq-item";
+
+
+                    item.innerHTML = `
+
+                        <div class="faq-keywords">
+                            🔑 ${faq.keywords.join(", ")}
+                        </div>
+
+                        <div class="faq-answer">
+                            ${faq.answer}
+                        </div>
+
+                        <div class="faq-actions">
+
+                            <button
+                                class="edit-btn"
+                                onclick="editFAQ(${index})"
+                            >
+                                ✏️ Edit
+                            </button>
+
+                            <button
+                                class="delete-btn"
+                                onclick="deleteFAQ(${index})"
+                            >
+                                🗑️ Delete
+                            </button>
+
+                        </div>
+
+                    `;
+
+
+                    faqList.appendChild(
+                        item
+                    );
+
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            faqList.innerHTML = `
+                <div class="empty">
+                    ❌ Failed to load FAQs.
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    // -----------------------------
+    // SAVE FAQ
+    // -----------------------------
+
+    async function saveFAQ() {
+
+        const keywordsInput =
+            document.getElementById(
+                "keywords"
+            );
+
+
+        const answerInput =
+            document.getElementById(
+                "answer"
+            );
+
+
+        const status =
+            document.getElementById(
+                "status"
+            );
+
+
+        const keywords =
+            keywordsInput.value
+                .split(",")
+                .map(
+                    keyword =>
+                        keyword.trim()
+                )
+                .filter(
+                    keyword =>
+                        keyword.length > 0
+                );
+
+
+        const answer =
+            answerInput.value.trim();
+
+
+        if (
+            keywords.length === 0 ||
+            !answer
+        ) {
+
+            status.textContent =
+                "❌ Enter keywords and an answer.";
+
+            return;
+
+        }
+
+
+        const token =
+            getToken();
+
+
+        if (!token) {
+
+            alert(
+                "Your admin session has expired. Please login again."
+            );
+
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        const isEditing =
+            editingId !== null;
+
+
+        const url =
+            isEditing
+                ? `${API_URL}/api/faqs/${editingId}`
+                : `${API_URL}/api/faqs`;
+
+
+        const method =
+            isEditing
+                ? "PUT"
+                : "POST";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method,
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "Authorization":
+                                `Bearer ${token}`
+
+                        },
+
+                        body:
+                            JSON.stringify({
+                                keywords,
+                                answer
+                            })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (response.status === 401) {
+
+                sessionStorage.removeItem(
+                    "adminLoggedIn"
+                );
+
+                sessionStorage.removeItem(
+                    "adminToken"
+                );
+
+
+                alert(
+                    "Admin session expired."
+                );
+
+
+                window.location.href =
+                    "login.html";
+
+                return;
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "Failed to save FAQ."
+                );
+
+            }
+
+
+            status.textContent =
+                isEditing
+                    ? "✅ FAQ updated successfully."
+                    : "✅ FAQ added successfully.";
+
+
+            keywordsInput.value = "";
+
+            answerInput.value = "";
+
+
+            editingId = null;
+
+
+            document.getElementById(
+                "formTitle"
+            ).textContent =
+                "Add New FAQ";
+
+
+            document.getElementById(
+                "saveBtn"
+            ).textContent =
+                "Add FAQ";
+
+
+            document.getElementById(
+                "cancelBtn"
+            ).style.display =
+                "none";
+
+
+            await loadFAQs();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            status.textContent =
+                "❌ " + error.message;
+
+        }
+
+    }
+
+
+    // -----------------------------
+    // EDIT FAQ
+    // -----------------------------
+
+    async function editFAQ(id) {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/api/faqs`
+                );
+
+
+            const faqs =
+                await response.json();
+
+
+            const faq =
+                faqs[id];
+
+
+            if (!faq) {
+
+                return;
+
+            }
+
+
+            editingId = id;
+
+
+            document.getElementById(
+                "keywords"
+            ).value =
+                faq.keywords.join(", ");
+
+
+            document.getElementById(
+                "answer"
+            ).value =
+                faq.answer;
+
+
+            document.getElementById(
+                "formTitle"
+            ).textContent =
+                "Edit FAQ";
+
+
+            document.getElementById(
+                "saveBtn"
+            ).textContent =
+                "Update FAQ";
+
+
+            document.getElementById(
+                "cancelBtn"
+            ).style.display =
+                "inline-block";
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    }
+
+
+    // -----------------------------
+    // CANCEL EDIT
+    // -----------------------------
+
+    function cancelEdit() {
+
+        editingId = null;
+
+
+        document.getElementById(
+            "keywords"
+        ).value = "";
+
+
+        document.getElementById(
+            "answer"
+        ).value = "";
+
+
+        document.getElementById(
+            "formTitle"
+        ).textContent =
+            "Add New FAQ";
+
+
+        document.getElementById(
+            "saveBtn"
+        ).textContent =
+            "Add FAQ";
+
+
+        document.getElementById(
+            "cancelBtn"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "status"
+        ).textContent = "";
+
+    }
+
+
+    // -----------------------------
+    // DELETE FAQ
+    // -----------------------------
+
+    async function deleteFAQ(id) {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to delete this FAQ?"
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        const token =
+            getToken();
+
+
+        if (!token) {
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/api/faqs/${id}`,
+                    {
+                        method: "DELETE",
+
+                        headers: {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (response.status === 401) {
+
+                sessionStorage.removeItem(
+                    "adminLoggedIn"
+                );
+
+                sessionStorage.removeItem(
+                    "adminToken"
+                );
+
+
+                alert(
+                    "Admin session expired."
+                );
+
+
+                window.location.href =
+                    "login.html";
+
+                return;
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "Failed to delete FAQ."
+                );
+
+            }
+
+
+            await loadFAQs();
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "❌ " + error.message
+            );
+
+        }
+
+    }
+
+
+    // -----------------------------
+    // INITIAL LOAD
+    // -----------------------------
+
+    loadFAQs();
+
+</script>
+
+
+</body>
+
+</html>
